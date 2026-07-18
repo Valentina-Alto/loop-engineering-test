@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Development in Practice</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #fff;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 1.5rem 2rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      color: #555;
+      margin-bottom: 0.25rem;
+    }
+
+    .author {
+      font-size: 1rem;
+      color: #777;
+      margin-bottom: 1.5rem;
+    }
+
+    .cover {
+      display: block;
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      margin: 0 auto 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .blurb {
+      font-size: 1.05rem;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: #0055d4;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .cta:hover, .cta:focus {
+      background: #003fa3;
+      outline: 2px solid #003fa3;
+      outline-offset: 2px;
+    }
+
+    section {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    section ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+
+    section li {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Agentic Development in Practice</h1>
+    <p class="subtitle">Build autonomous AI agents that ship real software</p>
+    <p class="author">by Valentina Alto</p>
+
+    <img
+      class="cover"
+      src="cover.png"
+      alt="Cover of Agentic Development in Practice by Valentina Alto, showing a stylised circuit-board illustration"
+    >
+
+    <p class="blurb">
+      A hands-on guide to designing, building, and deploying AI agents that go
+      beyond chat — from delivery loops and tool orchestration to governed
+      production workflows. Every chapter pairs theory with runnable code you can
+      ship today.
+    </p>
+
+    <a class="cta" href="https://example.com/get-the-book">Get the book</a>
+  </header>
+
+  <main>
+    <section aria-label="What you will learn">
+      <h2>What you'll learn</h2>
+      <ul>
+        <li>Design delivery loops that carry context from trigger to governed outcome</li>
+        <li>Orchestrate tools, MCP servers, and external APIs from a single agent</li>
+        <li>Implement human-in-the-loop gates for safety-critical decisions</li>
+        <li>Write fixture-locked tests that pin non-deterministic AI output</li>
+        <li>Deploy agents to production with observability and rollback built in</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Valentina Alto. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
