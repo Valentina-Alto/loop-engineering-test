@@ -36,7 +36,7 @@ them mention the feature being built**, so you build the loop once and every iss
 |---|---|---|---|
 | 1 | **The engine** | `.github/prompts/deliver-feature.loop.md` | What `/loop` runs. One tick = advance **one** capability, then stop at the gates. |
 | 2 | **The protocol** | `.github/skills/deliver-feature/SKILL.md` | The single source of truth for the five capabilities + the two gates. The engine invokes it every tick. |
-| 3 | **The conventions** | `AGENTS.md` | Always-on repo facts (branching, done-condition, sensitive areas) the loop loads during **Discover**. |
+| 3 | **The conventions** | `.github/copilot-instructions.md` | Always-on law (cadence, gates, guardrails), **auto-loaded every turn** — the loop's policy during **Discover**. |
 | 4 | **The contract** | `.github/ISSUE_TEMPLATE/feature-loop.yml` | Forces a machine-checkable acceptance checklist — the objective **Discover** reads and the done-condition **Complete** closes on. |
 | 5 | **The verifier** | `.github/workflows/verify.yml` | Runs on every push (**Verify & Recover**) *and* gates **Complete**: refuses to pass while any acceptance box is unchecked. |
 | 6 | **The guardrails** | `.github/hooks/pre-pr.json` + `.vscode/mcp.json` | Keep **Execute** off `main`; give **Verify & Recover** least-privilege read-CI / write-thread access. |
@@ -90,7 +90,7 @@ Run `copilot` in this repo, then:
 
 | Capability | What you see on the issue/PR thread | Primitive at work | Your move |
 |---|---|---|---|
-| **1. Discover** | Loop posts goals, constraints, assumptions, open questions — no code | **engine** reads the issue; **conventions** (`AGENTS.md`) + **protocol** (`SKILL.md`) shape the restatement; **contract** supplied the acceptance criteria | — |
+| **1. Discover** | Loop posts goals, constraints, assumptions, open questions — no code | **engine** reads the issue; **instructions** (`copilot-instructions.md`) + **protocol** (`SKILL.md`) shape the restatement; **contract** supplied the acceptance criteria | — |
 | **2. Plan** | Loop posts a file map + test mapping + rollback, then **stops** | **protocol** — "produce a reviewable plan, then wait for `plan approved`" | 🚦 reply **`plan approved`** |
 | **3. Execute** | Commits stream onto `feature/<#>-…` in small, intent-named slices | **engine** (one slice/tick) + **guardrail** `pre-pr.json` keeps it off `main` | — |
 | **4. Verify & Recover** | `verify` runs on each push; a red check self-heals next tick | **verifier** `verify.yml`; **guardrail** `.vscode/mcp.json` lets it read CI + write the thread | — |
@@ -150,5 +150,5 @@ gh issue edit <ISSUE#> --remove-label loop-started   # let the loop re-fire
 | The loop implements before you approve | Plan gate skipped | It must **stop** after Plan — reply `plan approved` only when you mean it; see the skill's decision flow |
 | Done-condition never passes | An acceptance box is still `- [ ]` | Edit the PR body, check every box with a link to evidence |
 
-See `AGENTS.md` for the repo conventions and `.github/skills/deliver-feature/SKILL.md` for the
+See `.github/copilot-instructions.md` for the always-on rules and `.github/skills/deliver-feature/SKILL.md` for the
 full protocol the loop follows.
