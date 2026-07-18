@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Development in Practice — Book Launch</title>
+  <meta name="description" content="Launch page for the book Agentic Development in Practice by Valentina Alto.">
+  <style>
+    /* System font stack — no external network dependencies. */
+    :root {
+      --ink: #1a1a2e;
+      --muted: #3a3a52;
+      --bg: #ffffff;
+      --panel: #f4f3fb;
+      --accent: #4b3fa7;
+      --accent-ink: #ffffff;
+      --border: #d9d6ef;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    a { color: var(--accent); }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .site-header .container {
+      padding-top: 1.25rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+    }
+
+    /* Hero — above the fold */
+    .hero .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      align-items: center;
+      padding-top: 2rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .hero-copy { flex: 1 1 320px; min-width: 0; }
+    .hero-cover { flex: 0 1 320px; min-width: 0; }
+
+    h1 {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 0.5rem;
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      color: var(--muted);
+      margin: 0 0 1rem;
+      font-weight: 600;
+    }
+
+    .author {
+      font-size: 1rem;
+      color: var(--muted);
+      margin: 0 0 1.25rem;
+    }
+
+    .author strong { color: var(--ink); }
+
+    .blurb {
+      font-size: 1.05rem;
+      margin: 0 0 1.75rem;
+      max-width: 60ch;
+    }
+
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--accent-ink);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+    }
+
+    .cta:hover, .cta:focus { background: #3a3086; border-color: #3a3086; }
+    .cta:focus-visible { outline: 3px solid #c9c3f0; outline-offset: 2px; }
+
+    /* Cover placeholder (inline SVG, no network) */
+    .cover-frame {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(26, 26, 46, 0.12);
+    }
+
+    /* What you'll learn */
+    .learn { background: var(--panel); }
+    .learn .container { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+
+    .learn h2 {
+      font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+      margin: 0 0 1rem;
+    }
+
+    .learn ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      max-width: 70ch;
+    }
+
+    .learn li { margin: 0.5rem 0; font-size: 1.05rem; }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .site-footer .container { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+    @media (max-width: 640px) {
+      .hero .container { flex-direction: column-reverse; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <span class="brand">Packt&nbsp;· New Release</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container">
+        <div class="hero-copy">
+          <h1 id="page-title">Agentic Development in Practice</h1>
+          <p class="subtitle">Building, shipping, and governing AI agents that do real work</p>
+          <p class="author">by <strong>Valentina Alto</strong></p>
+          <p class="blurb">
+            Move beyond demos and prompts. This hands-on guide shows you how to design
+            recurring, verifiable agent loops — carrying context from a filed issue all
+            the way to a governed merge — so your AI systems ship reliable software
+            instead of one-off snippets.
+          </p>
+          <a class="cta" href="https://www.packtpub.com/" id="get-the-book">Get the book</a>
+        </div>
+        <div class="hero-cover">
+          <div class="cover-frame">
+            <img
+              src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20320%20420'%20role='img'%3E%3Crect%20width='320'%20height='420'%20fill='%234b3fa7'/%3E%3Crect%20x='0'%20y='0'%20width='320'%20height='70'%20fill='%233a3086'/%3E%3Ctext%20x='160'%20y='45'%20fill='%23ffffff'%20font-family='sans-serif'%20font-size='20'%20font-weight='bold'%20text-anchor='middle'%3EPackt%3C/text%3E%3Ctext%20x='160'%20y='210'%20fill='%23ffffff'%20font-family='sans-serif'%20font-size='30'%20font-weight='bold'%20text-anchor='middle'%3EAgentic%3C/text%3E%3Ctext%20x='160'%20y='250'%20fill='%23ffffff'%20font-family='sans-serif'%20font-size='30'%20font-weight='bold'%20text-anchor='middle'%3EDevelopment%3C/text%3E%3Ctext%20x='160'%20y='290'%20fill='%23ffffff'%20font-family='sans-serif'%20font-size='30'%20font-weight='bold'%20text-anchor='middle'%3Ein%20Practice%3C/text%3E%3Ctext%20x='160'%20y='390'%20fill='%23d9d6ef'%20font-family='sans-serif'%20font-size='18'%20text-anchor='middle'%3EValentina%20Alto%3C/text%3E%3C/svg%3E"
+              alt="Book cover of Agentic Development in Practice by Valentina Alto, published by Packt"
+              width="320" height="420">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="learn" aria-labelledby="learn-title">
+      <div class="container">
+        <h2 id="learn-title">What you'll learn</h2>
+        <ul>
+          <li>Design recurring, verifiable agent loops instead of ad-hoc prompting.</li>
+          <li>Carry durable context from a filed issue through to a governed merge.</li>
+          <li>Add human gates that steer agents at the moments that matter.</li>
+          <li>Map every acceptance criterion to a concrete, machine-checkable signal.</li>
+          <li>Operate agents under least-privilege, fail-safe guardrails.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Valentina Alto. <em>Agentic Development in Practice</em> is published by Packt.</p>
+    </div>
+  </footer>
+</body>
+</html>
