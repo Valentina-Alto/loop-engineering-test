@@ -131,6 +131,19 @@ echo '{"tool_input":{"command":"git push origin feature/4-launch-page"}}' | pyth
 
 ---
 
+## The landing page (issue #4)
+
+A worked output of the loop lives at [`index.html`](./index.html) — a single,
+self-contained book-launch page (inline CSS, no build step, no external network
+dependencies).
+
+- **Open it:** double-click `index.html`, or `python -m http.server` then browse to it.
+- **Edit the CTA:** change the `href` on the `#get-the-book` anchor in `index.html`.
+- **Edit the copy:** title/subtitle/author/blurb and the "What you'll learn" list are
+  plain HTML near the top of `<main>`.
+- **Verify it:** `python -m unittest tests.test_landing_page` runs the acceptance checks
+  (required content, responsive markers, accessibility, pinned-contrast palette).
+
 ## Reset between demos
 
 ```bash
