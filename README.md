@@ -56,7 +56,9 @@ with evidence and CI is green.** You approve the plan; you click merge. That's i
 
 ## Track A — Triggered (cloud coding agent)
 
-*"The loop that keeps running after you close the laptop."*
+*"The loop that keeps running after you close the laptop."* The entry-point primitive here is the
+**`loop-dispatch.yml`** workflow: assigning the issue fires it, and it hands the work to the
+Copilot coding agent, which then runs the same skill + instructions the CLI track uses.
 
 ```bash
 # P0 — file a loop-ready issue (or use the 🔁 Feature Loop template in the UI)
@@ -76,16 +78,16 @@ gh issue edit <ISSUE#> --add-assignee "@copilot"
 
 Then **watch it on GitHub**:
 
-| Stage | What you see | Your move |
-|---|---|---|
-| **P0** Trigger | `loop-dispatch` adds `loop-started` + a kickoff comment | — |
-| **P1** Normalize | Agent posts goals, constraints, assumptions, open questions | — |
-| **P2** Plan | Agent opens a **draft PR** with the plan, then waits | 🚦 comment **`plan approved`** |
-| **P3** Implement | Commits stream onto the PR branch | — |
-| **P4** Verify | `loop-verify` runs on each push | — |
-| **P5** Auto-recover | Red check → agent fixes itself (or nudge `@copilot fix the failing check`) | — |
-| **P6/P7** Guardrails + memory | Push-to-main blocked; thread carries every decision | — |
-| **P8** Done-condition | Gate stays red until all boxes checked + CI green | 🚦 click **Merge** |
+| Stage | What you see | **Primitive at work** | Your move |
+|---|---|---|---|
+| **P0** Trigger | `loop-dispatch` adds `loop-started` + a kickoff comment | **`loop-dispatch.yml`** reacts to `issues: assigned`; `feature-loop.yml` shaped the issue input | — |
+| **P1** Normalize | Agent posts goals, constraints, assumptions, open questions | **`copilot-instructions.md`** — auto-loaded by the coding agent, it's the policy source for this track (the cloud agent does *not* auto-load skills) | — |
+| **P2** Plan | Agent opens a **draft PR** with the plan, then waits | **`copilot-instructions.md`** P2 rule: "stop and wait for `plan approved`" | 🚦 comment **`plan approved`** |
+| **P3** Implement | Commits stream onto the PR branch | **`copilot-instructions.md`** P3: bounded, intent-named slices | — |
+| **P4** Verify | `loop-verify` runs on each push | **`loop-verify.yml`** — lint/unit/integration/contract + fixture test | — |
+| **P5** Auto-recover | Red check → agent fixes itself (or nudge `@copilot fix the failing check`) | **`.vscode/mcp.json`** (least-privilege GitHub MCP) lets it read CI logs + write the thread | — |
+| **P6/P7** Guardrails + memory | Push-to-main blocked; thread carries every decision | **`pre-pr.json`** hook (P6 bounds); the issue/PR thread is the memory (P7) | — |
+| **P8** Done-condition | Gate stays red until all boxes checked + CI green | **`loop-verify.yml`** `done-condition` job counts `- [ ]` vs `- [x]` | 🚦 click **Merge** |
 
 Watch the run: `gh run watch $(gh run list --workflow loop-dispatch.yml -L1 --json databaseId -q '.[0].databaseId')`
 
@@ -99,14 +101,23 @@ Watch the run: `gh run watch $(gh run list --workflow loop-dispatch.yml -L1 --js
 /loop 15m advance the delivery loop for issue #<ISSUE#> by one stage using @.github/prompts/deliver-feature.loop.md
 ```
 
+**The only primitive that changes between the two tracks is the entry point.** Track A's entry
+point is the **`loop-dispatch.yml`** workflow (cloud); Track B's is **`deliver-feature.loop.md`**
+scheduled by `/loop` (local). From P1 onward the *behaviour* is identical because both tracks run
+against the same P0–P8 policy and the same issue/PR thread. The one nuance: the cloud agent reads
+its policy from **`copilot-instructions.md`** (it doesn't auto-load skills), while the CLI track
+reads it from **`deliver-feature/SKILL.md`** — the two are kept in lock-step on purpose. Everything
+downstream (`loop-verify.yml`, `pre-pr.json`, `.vscode/mcp.json`) is shared. That shared thread is
+why either track can start the work and the other can finish it.
+
 `/loop` schedules that prompt to re-run **for this session**; each tick advances the loop by
 **one** stage and stops, so the human gates are always respected. Close the terminal and it stops
 — that's the difference from Track A. Narrate as it moves:
 
-1. **P1** — it posts understanding (no code yet).
-2. **P2** — it posts the plan and **pauses**. Reply **`plan approved`** (in chat or on the issue).
-3. **P3–P5** — it builds `feature/<#>-…`, `loop-verify` runs, it self-heals a red check.
-4. **P8** — it announces "ready for merge" and stops. You **merge** on GitHub.
+1. **P0/P1** — **`deliver-feature.loop.md`** loads **`SKILL.md`** + **`copilot-instructions.md`**, reads the issue via the **`.vscode/mcp.json`** connector, and posts understanding (no code yet).
+2. **P2** — following the **`copilot-instructions.md`** plan-gate rule, it posts the plan and **pauses**. Reply **`plan approved`** (in chat or on the issue).
+3. **P3–P5** — per **`SKILL.md`**, it builds `feature/<#>-…` in slices; **`loop-verify.yml`** runs on each push; on a red check it self-heals through the MCP connector. The **`pre-pr.json`** hook keeps it off `main`.
+4. **P8** — **`loop-verify.yml`**'s `done-condition` job blocks it until every box is checked; then it announces "ready for merge" and stops. You **merge** on GitHub.
 
 > Tip: for a snappier live demo use a short interval (`/loop 5m …`); to narrow it to just fixing
 > CI on an open PR: `/loop 5m check the open PR for issue #<#>, read failing loop-verify checks,
