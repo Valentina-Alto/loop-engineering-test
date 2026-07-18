@@ -5,7 +5,9 @@ description: >
   through the eight-stage delivery loop (P0–P8): normalize intent, plan behind a
   human gate, implement in bounded slices, verify continuously, auto-recover from
   failures, honor the human gates, persist memory in the thread, and enforce the
-  done-condition. Issue-agnostic — the same skill ships every feature.
+  done-condition. Issue-agnostic and entry-agnostic — invoked both by the Copilot
+  coding agent (cloud, via loop-dispatch.yml) and from Copilot CLI (via `/loop`
+  scheduling the deliver-feature.loop.md prompt). The same skill ships every feature.
 ---
 
 # Skill: Deliver a Feature Through the Loop
@@ -15,9 +17,38 @@ purpose: you build the loop once, and every future issue rides the same rails.
 
 ## When to use
 
-Use this whenever the loop dispatch assigns you a feature issue labeled `loop`.
-Assume the issue was filed with the `feature-loop.yml` template, so it arrives
-loop-ready with goals, constraints, and acceptance criteria.
+Use this whenever a feature issue labeled `loop` needs to be delivered. Assume the
+issue was filed with the `feature-loop.yml` template, so it arrives loop-ready with
+goals, constraints, and acceptance criteria.
+
+## Two entry points, one protocol
+
+This skill is written to be **entry-agnostic**. The exact same P0–P8 rails run whether
+the loop is started in the cloud or from your terminal:
+
+- **Cloud (unattended).** The `loop-dispatch.yml` workflow reacts to an assigned,
+  `loop`-labeled issue and hands it to the Copilot coding agent. The agent loads
+  `copilot-instructions.md` (which restates this protocol) and runs the whole loop.
+- **CLI (session-scoped).** You run `/loop` in GitHub Copilot CLI to schedule the
+  `deliver-feature.loop.md` prompt, which invokes this skill on an interval. Each tick
+  advances the loop by one stage. This is the local twin of the workflow — great while
+  you actively steer, but it stops when you close the terminal.
+
+Both paths converge on the same issue/PR thread, so they are interchangeable and can even
+hand off to each other: start the loop locally with `/loop`, then assign the issue to the
+coding agent to let it finish in the cloud (or vice versa). Because the thread is the only
+memory (P7), whichever runtime picks up next simply reads the thread and continues.
+
+### P0 — Acquire context (both entry points)
+
+Before doing anything, establish *where you are* in the loop from durable state, not from
+assumptions:
+
+1. Identify the target loop issue: the number you were invoked with (CLI), or the issue
+   the workflow assigned you (cloud), or the open issue labeled `loop`.
+2. Read the issue **and** any open PR that references it through the GitHub MCP connector.
+3. Reconstruct the current stage from the thread (see the Decision flow below) and advance
+   from there. When running per-tick via `/loop`, advance **exactly one** stage, then stop.
 
 ## The protocol
 
@@ -82,7 +113,7 @@ questions. The thread is the only source of truth.
 
 ## Decision flow
 
-1. Issue just assigned & labeled `loop`? → start at **P1**.
+1. Loop just started (assigned in cloud, or `/loop` tick in CLI) & labeled `loop`? → start at **P1**.
 2. Plan not yet approved? → produce/refine plan, **wait** (P2).
 3. Plan approved? → implement the next **bounded slice** (P3) + verify (P4).
 4. Check red or review comment arrived? → **auto-recover** (P5), loop back to P4.

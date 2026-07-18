@@ -68,7 +68,13 @@ jobs:
                 body: [
                   "🔁 **Loop started.**",
                   "",
-                  "Assigning the Copilot coding agent. It will now:",
+                  "This issue is now on the delivery-loop rails (P0–P8). It can be driven",
+                  "from either entry point — both follow the same policy and share this thread:",
+                  "",
+                  "- **Cloud (unattended):** assign the Copilot coding agent (`@copilot`) to run the loop here.",
+                  "- **CLI (session-scoped):** run `/loop 15m advance the delivery loop for issue #" + issue.number + "` in Copilot CLI.",
+                  "",
+                  "Whichever runtime picks it up will now:",
                   "1. **P1** — post its understanding (goals, constraints, assumptions, open questions)",
                   "2. **P2** — post a reviewable plan and **wait for `plan approved`**",
                   "",
@@ -76,8 +82,11 @@ jobs:
                 ].join("\n"),
               });
 
-              // In a real repo this hands the issue to the Copilot coding agent
-              // (e.g. via assignment to the coding-agent bot or a workflow_dispatch).
+              // Hand off to whichever runtime will drive the loop:
+              //   • Cloud: assign the Copilot coding agent (or fire a workflow_dispatch).
+              //   • CLI:   the human runs `/loop` to schedule deliver-feature.loop.md.
+              // Both read this thread as the single source of truth, so either can
+              // start the loop and the other can finish it.
               started++;
             }
 

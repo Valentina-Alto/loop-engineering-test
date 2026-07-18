@@ -11,6 +11,21 @@ merge. Nothing here is tribal knowledge; it is reviewable, versioned, and improv
 > a recurring, verifiable workflow that carries context from a trigger all the way
 > to a governed outcome, and then repeats.
 
+## Two entry points, one policy
+
+This same policy governs the loop no matter how it is started. There are two entry
+points, and they are interchangeable because the issue/PR thread is the only memory:
+
+- **Cloud (unattended):** the `loop-dispatch.yml` workflow hands an assigned,
+  `loop`-labeled issue to the Copilot coding agent, which loads these instructions and
+  runs P0–P8 to a governed merge — whether or not your machine is on.
+- **CLI (session-scoped):** you run `/loop` in Copilot CLI to schedule the
+  `.github/prompts/deliver-feature.loop.md` prompt, which invokes the `deliver-feature`
+  skill one stage per tick. It stops when you close the terminal.
+
+Either runtime may start the loop and the other may finish it: read the thread, determine
+the current stage, and continue. The rules below apply identically to both.
+
 ## Operating cadence: Research → Plan → Implement (RPI)
 
 1. **Normalize intent first (P1 — Research).** Restate the raw issue as goals,
