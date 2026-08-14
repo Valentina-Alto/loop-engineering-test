@@ -56,18 +56,36 @@ Turn an informal request into an executable objective.
 
 Ambiguity disappears here. Nothing has been implemented yet.
 
-### 2. Plan — **human gate 1**
+### 2. Plan — **human gate 1: Plan Approval**
 
 Produce a reviewable delivery plan:
 
 - A **file-level change map** (each file + its responsibility).
 - The **implementation strategy** and a **criterion → test mapping**.
-- The **verification approach** and a **rollback note**.
+- - The **verification approach** and a **rollback note**.
 - The **assumptions** the plan rests on.
 
-Then **stop and wait.** Do not write code until a human replies `plan approved`. The
-engineer reviews *thinking, not typing* — correcting direction here costs a sentence.
-If the feature touches auth, payments, PII, or production, call out the extra hard gate here.
+Then **stop and wait.** Do not write code until a human with repository write access 
+replies with an approval signal (e.g., `plan approved`, `looks good`, `approved`, or a 👍 
+reaction). The engineer reviews *thinking, not typing* — correcting direction here costs 
+a sentence. If the feature touches auth, payments, PII, or production, call out the extra 
+hard gate here.
+
+#### How plan approval works
+
+- **Who can approve:** Any user with write access to the repository (collaborators, team members, 
+  maintainers). Comments and reactions from non-collaborators are logged but do not unblock the gate.
+- **What counts as approval:** Any of:
+  - A comment or reply containing `plan approved`, `approved`, `looks good`, `lgtm`, or equivalent positive sentiment
+  - A 👍 (thumbs up) reaction on the plan comment from a write-access holder
+  - An explicit reply affirming the plan direction
+- **Ambiguous signals:** If a comment is unclear (e.g., "I have concerns about the rollback strategy"), 
+  the loop posts a clarifying question and **does not proceed**. Only an unambiguous approval signal 
+  crosses the gate.
+- **Edge case — plan revision:** If the engineer replies with a **revised** plan instead of approval 
+  (e.g., "Looks good, but I'd suggest changing the order of files X and Y"), the loop acknowledges 
+  the feedback, updates the plan, and waits for re-approval. The loop never assumes silence or 
+  partial feedback is a go.
 
 ### 3. Execute
 
@@ -134,7 +152,7 @@ In all cases, the loop writes a diagnostic summary to the thread and waits for a
 Pin any ranking/ordering or layout surface with a fixture-locked test so "correct" is a wall
 the loop cannot climb over, not a hope.
 
-### 5. Complete — **human gate 2**
+### 5. Complete — **human gate 2: Merge Authorization**
 
 The loop closes only when **every** acceptance box is checked with evidence **and** CI is
 green — `verify.yml`'s done-condition job refuses to pass otherwise. When the done-condition
@@ -146,7 +164,7 @@ and **stop.** The final decision — **merge** — belongs to the engineer. "PR 
 
 1. No understanding comment on the thread yet? → **Discover**.
 2. Understanding posted, no plan yet? → **Plan**, then wait.
-3. Plan posted but not yet `plan approved`? → **stop** (human gate 1). Re-check next tick.
+3. Plan posted but not yet approved by a write-access holder? → **stop** (human gate 1). Re-check next tick.
 4. Plan approved, work remaining? → next **Execute** slice, then **Verify & Recover**.
 5. A check is red or a review comment arrived? → **Verify & Recover** (patch + re-verify).
 6. All acceptance boxes checked + CI green? → **Complete**: announce the merge gate and stop.
@@ -154,8 +172,9 @@ and **stop.** The final decision — **merge** — belongs to the engineer. "PR 
 ## Non-negotiable bounds
 
 - Advance **exactly one** capability per tick, then stop and write state back to the thread.
-- Never cross a human gate autonomously: stop before Executing without `plan approved`, and
+- Never cross a human gate autonomously: stop before Executing without explicit plan approval, and
   stop before merging.
+- Only users with write access to the repository can unblock human gates (approval, merge authorization, sensitive escalations).
 - Sensitive areas (auth, payments, PII, production) add a hard gate regardless of CI — halt
   and ask.
 - Treat the MCP connector as least-privilege: read CI logs and write the thread — never hold
