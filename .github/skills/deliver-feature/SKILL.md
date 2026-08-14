@@ -89,6 +89,48 @@ the next tick simply feeds the failure back to the agent, which reads the CI log
 GitHub MCP connector, patches, and re-verifies. Recovery is part of the loop; the engineer
 never copies an error into a prompt by hand.
 
+The fix is just another iteration of the same loop — the agent reads the CI log, diagnoses 
+the failure, and attempts a patch. However, recovery has boundaries: after three failed 
+attempts on the same criterion, or if a failure pattern repeats despite valid patches, the 
+loop halts and posts a diagnostic summary to the thread. In sensitive areas (auth, payments, 
+PII, production), the loop stops immediately on any failure and waits for human approval. If 
+recovery exhausts its retries, the engineer decides whether to rollback to the last passing 
+state, revise the plan, or escalate to unblock an external dependency.
+
+#### Recovery boundaries: when the loop stops retrying
+
+The loop is **not** infinite retries. Recovery has three explicit stopping conditions:
+
+1. **Retry limit reached**: After three failed attempts on the same criterion (same check failing three times), the loop stops patching autonomously and posts a diagnostic comment tagging the engineer. The branch remains open; the engineer reviews the logs, decides whether to revise the plan or escalate.
+
+2. **Sensitive area failure**: If verification fails in auth, payments, PII, or production contexts — or if a review comment flags such concerns — the loop halts immediately, posts diagnostic output with the error logs, and waits for human approval before any retry. No autonomous patch.
+
+3. **Unrecoverable error pattern**: If the same verification failure repeats despite valid patches (e.g., a flaky test, external service down, or a constraint that contradicts the plan), the loop detects the pattern after the second identical failure, posts a summary of attempts and diagnostics, and waits. The engineer then either:
+   - Approve a revised plan that removes or reframes the failing criterion.
+   - Pause the loop, fix the external blocker (e.g., service availability), and resume.
+   - Close the issue and file a dependency blocker.
+
+#### Rollback: restoring the last working version
+
+If recovery fails and the engineer approves a rollback:
+
+1. The loop resets the feature branch to the last commit that passed all checks.
+2. Remaining work is re-planned: the engineer and loop review the blocked criterion and agree on a revised approach.
+3. Execution resumes from the next safe slice.
+
+Rollback is not a failure state; it's a deliberate reset within the loop's control flow.
+
+#### When to ask for help (human decision gates during recovery)
+
+The loop pauses and posts a question for the engineer in these cases:
+
+- **Plan contradiction**: A criterion in the plan cannot satisfy the acceptance checklist — clarify which takes priority.
+- **External dependency**: A required service is unavailable or the feature depends on external API changes.
+- **Fixture mismatch**: Deterministic output doesn't match the frozen fixture, and the difference is not covered by the plan.
+- **Scope creep**: Acceptance criteria imply a larger feature than the plan anticipated — stop and re-plan.
+
+In all cases, the loop writes a diagnostic summary to the thread and waits for a human decision. It never retries autonomously past these gates.
+
 Pin any ranking/ordering or layout surface with a fixture-locked test so "correct" is a wall
 the loop cannot climb over, not a hope.
 
